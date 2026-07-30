@@ -2,4 +2,62 @@
 @tailwind components;
 @tailwind utilities;
 
-body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+:root {
+  --bg-gradient-start: #f8fafc; /* slate-50 */
+  --bg-gradient-end: #ffffff;
+}
+
+html, body, #__next {
+  height: 100%;
+}
+
+body {
+  @apply bg-gradient-to-b from-slate-50 to-white text-slate-900 antialiased;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+/* App container */
+.main-container {
+  @apply max-w-4xl mx-auto px-6 py-10;
+}
+
+.header-brand {
+  @apply text-4xl font-extrabold tracking-tight text-slate-900;
+}
+
+/* Search bar */
+.search-wrap {
+  @apply mt-4 flex items-start gap-3;
+}
+
+.input-prefix {
+  @apply inline-flex items-center bg-white border border-slate-200 px-4 rounded-l-md text-slate-600;
+}
+
+.input-field {
+  @apply flex-1 border border-slate-200 rounded-r-md px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-300;
+}
+
+.chip {
+  @apply inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 text-sm shadow-sm hover:bg-slate-50 cursor-pointer;
+}
+
+.card {
+  @apply bg-white rounded-xl shadow-md p-6;
+}
+
+.verse-card {
+  @apply bg-white rounded-lg border p-4 shadow-sm;
+}
+
+.action-btn {
+  @apply inline-flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none;
+}
+
+.secondary-btn {
+  @apply inline-flex items-center gap-2 bg-slate-100 text-slate-700 px-3 py-1 rounded-md hover:bg-slate-200;
+}
+
+.crisis-banner {
+  @apply fixed inset-x-0 top-4 mx-auto max-w-4xl bg-red-600 text-white p-4 rounded-md shadow-lg z-50;
+}

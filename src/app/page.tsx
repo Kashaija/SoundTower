@@ -42,7 +42,6 @@ export default function Page() {
         setCrisis(data.hotline);
         setVariants([]);
       } else if (data?.results?.length) {
-        // Map DB results to frontend variant shape
         const mapped = data.results.map((r: any) => ({
           first_person_affirmation: r.first_person_affirmation,
           canonical_scriptures: {
@@ -61,7 +60,6 @@ export default function Page() {
         setVariants([data.generated]);
         setIndex(0);
       } else if (data?.generated === undefined && data?.first_person_affirmation) {
-        // direct LLM return shape
         setVariants([data]);
         setIndex(0);
       }
@@ -83,94 +81,95 @@ export default function Page() {
   const current = variants[index];
 
   return (
-    <main className="max-w-3xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-4">SoundTower</h1>
+    <main className="main-container">
+      <header className="mb-6">
+        <div className="flex items-center justify-between">
+          <h1 className="header-brand">SoundTower</h1>
+          <div className="text-sm text-slate-500">A gentle, scripture-based comfort engine</div>
+        </div>
+      </header>
 
       {crisis && (
-        <div className="fixed top-4 left-0 right-0 bg-red-600 text-white p-4 z-50">
-          <strong>Immediate help:</strong> {crisis.text}
+        <div className="crisis-banner">
+          <strong className="mr-2">Immediate help:</strong>
+          <span>{crisis.text}</span>
         </div>
       )}
 
-      <div className="mb-4">
-        <label className="block text-sm text-gray-600 mb-1">I am feeling...</label>
-        <div className="flex">
-          <span className="inline-flex items-center bg-gray-100 px-3 rounded-l">I am feeling...</span>
+      <section className="card mb-6">
+        <label className="block text-sm text-slate-600 mb-3">I am feeling...</label>
+        <div className="search-wrap">
+          <span className="input-prefix">I am feeling...</span>
           <input
-            className="flex-1 border px-3 py-2 rounded-r"
+            className="input-field"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="type how you feel..."
           />
-          <button className="ml-2 bg-blue-600 text-white px-4 rounded" onClick={() => doSearch(query)} disabled={loading}>
+          <button className="action-btn" onClick={() => doSearch(query)} disabled={loading}>
             {loading ? 'Searching...' : 'Search'}
           </button>
         </div>
-      </div>
 
-      <div className="mb-6 grid grid-cols-2 gap-2">
-        {CHIPS.map(c => (
-          <button key={c.value} onClick={() => onChipClick(c.value)} className="p-2 bg-gray-100 rounded">
-            {c.label}
-          </button>
-        ))}
-      </div>
+        <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {CHIPS.map(c => (
+            <button key={c.value} onClick={() => onChipClick(c.value)} className="chip" aria-label={c.label}>
+              <span className="text-sm">{c.label}</span>
+            </button>
+          ))}
+        </div>
+      </section>
 
       {current ? (
         <article className="space-y-6">
-          <section className="bg-gray-50 p-6 rounded">
-            <h2 className="text-2xl font-semibold">{current.first_person_affirmation}</h2>
-            <div className="mt-2 text-sm text-gray-600">Get this reminder printed on a premium canvas or journal</div>
-            <div className="mt-2">
-              <button className="bg-green-600 text-white px-3 py-1 rounded">Get this reminder printed on a premium canvas or journal</button>
+          <section className="card">
+            <h2 className="text-2xl font-semibold leading-relaxed">{current.first_person_affirmation}</h2>
+            <div className="mt-3 text-sm text-slate-600">Placed beneath this affirmation: print-on-demand button and subtle CTA</div>
+            <div className="mt-4">
+              <button className="secondary-btn">Get this reminder printed on a premium canvas or journal</button>
             </div>
           </section>
 
           <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="p-4 border rounded">
-              <h3 className="font-semibold">{current.canonical_scriptures["1_gospel"].reference}</h3>
-              <p>{current.canonical_scriptures["1_gospel"].text}</p>
+            <div className="verse-card">
+              <h3 className="font-semibold mb-1">{current.canonical_scriptures["1_gospel"].reference}</h3>
+              <p className="text-sm text-slate-700">{current.canonical_scriptures["1_gospel"].text}</p>
             </div>
-            <div className="p-4 border rounded">
-              <h3 className="font-semibold">{current.canonical_scriptures["2_psalm"].reference}</h3>
-              <p>{current.canonical_scriptures["2_psalm"].text}</p>
+            <div className="verse-card">
+              <h3 className="font-semibold mb-1">{current.canonical_scriptures["2_psalm"].reference}</h3>
+              <p className="text-sm text-slate-700">{current.canonical_scriptures["2_psalm"].text}</p>
             </div>
-            <div className="p-4 border rounded">
-              <h3 className="font-semibold">{current.canonical_scriptures["3_epistle"].reference}</h3>
-              <p>{current.canonical_scriptures["3_epistle"].text}</p>
+            <div className="verse-card">
+              <h3 className="font-semibold mb-1">{current.canonical_scriptures["3_epistle"].reference}</h3>
+              <p className="text-sm text-slate-700">{current.canonical_scriptures["3_epistle"].text}</p>
             </div>
-            <div className="p-4 border rounded">
-              <h3 className="font-semibold">{current.canonical_scriptures["4_old_testament"].reference}</h3>
-              <p>{current.canonical_scriptures["4_old_testament"].text}</p>
-            </div>
-          </section>
-
-          <section className="bg-gray-50 p-4 rounded">
-            <blockquote>
-              <p className="italic">"{current.theological_quote.quote}"</p>
-              <footer>{current.theological_quote.author} — {current.theological_quote.credentials}</footer>
-            </blockquote>
-            <blockquote className="mt-3">
-              <p className="italic">"{current.pastoral_quote.quote}"</p>
-              <footer>{current.pastoral_quote.author} — {current.pastoral_quote.credentials}</footer>
-            </blockquote>
-          </section>
-
-          <section className="p-4 rounded border">
-            <h4 className="font-semibold">Guided Prayer</h4>
-            <p>{current.guided_prayer}</p>
-            <div className="mt-3">
-              <button className="bg-yellow-600 text-white px-3 py-1 rounded">Play 60s preview</button>
+            <div className="verse-card">
+              <h3 className="font-semibold mb-1">{current.canonical_scriptures["4_old_testament"].reference}</h3>
+              <p className="text-sm text-slate-700">{current.canonical_scriptures["4_old_testament"].text}</p>
             </div>
           </section>
 
-          <div className="flex gap-2">
-            <button onClick={regenerate} className="px-4 py-2 bg-indigo-600 text-white rounded">🔄 Show a different promise</button>
-            <div className="ml-auto text-sm text-gray-500">Variant {index + 1} of {variants.length}</div>
-          </div>
+          <section className="card">
+            <blockquote className="italic text-slate-700">"{current.theological_quote.quote}"</blockquote>
+            <div className="mt-2 text-sm text-slate-500">{current.theological_quote.author} — {current.theological_quote.credentials}</div>
+            <hr className="my-4" />
+            <blockquote className="italic text-slate-700">"{current.pastoral_quote.quote}"</blockquote>
+            <div className="mt-2 text-sm text-slate-500">{current.pastoral_quote.author} — {current.pastoral_quote.credentials}</div>
+          </section>
+
+          <section className="card">
+            <h4 className="font-semibold mb-2">Guided Prayer</h4>
+            <p className="text-slate-700">{current.guided_prayer}</p>
+
+            <div className="mt-4 flex items-center gap-3">
+              <button className="secondary-btn">Play 60s preview</button>
+              <button className="action-btn" onClick={regenerate}>🔄 Show a different promise</button>
+              <div className="ml-auto text-sm text-slate-500">Variant {index + 1} of {variants.length}</div>
+            </div>
+          </section>
         </article>
       ) : (
-        <div className="text-gray-500">No results yet. Try a chip or type how you feel.</div>
+        <div className="text-slate-500">No results yet. Try a chip or type how you feel.</div>
       )}
     </main>
   );
